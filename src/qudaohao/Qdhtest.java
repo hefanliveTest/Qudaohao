@@ -1,9 +1,13 @@
 package qudaohao;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 import org.openqa.selenium.By;
@@ -59,19 +63,21 @@ public class Qdhtest {
 			}
 
 		});
-		
-		//执行adb 的logcat命令，测试
-		/*Process process=Runtime.getRuntime().exec("adb logcat");
-		process.waitFor();
-		InputStreamReader isr=new InputStreamReader(process.getInputStream());
 
-		Scanner sc=new Scanner(isr);
-		while(sc.hasNext()){
-		   System.out.println(sc.next());
-		   System.out.println("logcat-------");
-		}*/
+		// 执行adb
+		getDevices();
+
+		// 执行adb 的logcat命令，测试
+		/*
+		 * Process process=Runtime.getRuntime().exec("adb logcat");
+		 * process.waitFor(); InputStreamReader isr=new
+		 * InputStreamReader(process.getInputStream());
+		 * 
+		 * Scanner sc=new Scanner(isr); while(sc.hasNext()){
+		 * System.out.println(sc.next()); System.out.println("logcat-------"); }
+		 */
 		//////////////////////////////////////////////////////////////////////
-		
+
 		AppLibs a = new AppLibs();
 
 		for (int i = 1; i <= 10; i++) {
@@ -88,5 +94,53 @@ public class Qdhtest {
 
 		driver.pinch(200, 500);
 
+	}
+
+	public String[] getDevices() {
+		String command = "adb logcat";
+		System.out.println(command);
+		ArrayList devices = new ArrayList();
+
+		try {
+			Process process = Runtime.getRuntime().exec(command);
+			BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+
+			String line = bufferedReader.readLine();
+			while (line != null) {
+				System.out.println(line);
+
+				// 写入文件
+				txtLog(line);
+				
+				//line = bufferedReader.readLine();
+			}
+			process.destroy();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return (String[]) devices.toArray(new String[] {});
+
+	}
+
+	// 写入文件
+	public static void txtLog(String str) {
+		FileWriter fw = null;
+		try {
+			// 如果文件存在，则追加内容；如果文件不存在，则创建文件
+			File f = new File("E:\\dd.txt");
+			fw = new FileWriter(f, true);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		PrintWriter pw = new PrintWriter(fw);
+		pw.println(str);
+		pw.flush();
+		try {
+			fw.flush();
+			pw.close();
+			fw.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 }
