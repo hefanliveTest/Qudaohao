@@ -26,6 +26,9 @@ import io.appium.java_client.android.AndroidDriver;
 public class Qdhtest {
 	private static AndroidDriver driver;
 
+	/*String[] apks = { "com.starunion.hefanlive" };
+	int i = 0;*/
+
 	@BeforeSuite(alwaysRun = true)
 	public void setUp() throws Exception {
 		// set up appium
@@ -36,9 +39,10 @@ public class Qdhtest {
 		capabilities.setCapability(CapabilityType.BROWSER_NAME, "");
 		capabilities.setCapability("platformName", "Android");
 		capabilities.setCapability("deviceName", "Android Emulator");
-		capabilities.setCapability("platformVersion", "6.0");
+		capabilities.setCapability("platformVersion", "5.1.1");
 		capabilities.setCapability("app", app.getAbsolutePath());
 		capabilities.setCapability("appPackage", "com.starunion.hefantv");
+		// capabilities.setCapability("appPackage", apks[i]);
 		capabilities.setCapability("appActivity", "com.sagacreate.boxlunch.activity.SplashActivity");
 
 		capabilities.setCapability("unicodeKeyboard", "True");
@@ -49,11 +53,17 @@ public class Qdhtest {
 	@AfterTest(alwaysRun = true)
 	public void tearDown() throws Exception {
 		// driver.quit();
-		driver.removeApp("io.appium.android.ime");
+		// driver.removeApp("io.appium.android.ime");
+		driver.removeApp("com.starunion.hefantv");
+		// i++;
+		setUp();
 	}
 
 	@Test
 	public void testcase() throws IOException, InterruptedException {
+
+		// 执行adb
+		 getDevices();
 
 		WebDriverWait wait = new WebDriverWait(driver, 60);
 		WebElement e = wait.until(new ExpectedCondition<WebElement>() {
@@ -64,23 +74,9 @@ public class Qdhtest {
 
 		});
 
-		// 执行adb
-		getDevices();
-
-		// 执行adb 的logcat命令，测试
-		/*
-		 * Process process=Runtime.getRuntime().exec("adb logcat");
-		 * process.waitFor(); InputStreamReader isr=new
-		 * InputStreamReader(process.getInputStream());
-		 * 
-		 * Scanner sc=new Scanner(isr); while(sc.hasNext()){
-		 * System.out.println(sc.next()); System.out.println("logcat-------"); }
-		 */
-		//////////////////////////////////////////////////////////////////////
-
 		AppLibs a = new AppLibs();
 
-		for (int i = 1; i <= 10; i++) {
+		for (int i = 1; i <= 1; i++) {
 			System.out.println("for start i=" + i);
 			if (Xlsfile.isempty("hefanlive_testcase2", 1, i)) {
 				break;
@@ -92,42 +88,79 @@ public class Qdhtest {
 			a.execute(driver, elementname, execute, value);
 		}
 
-		driver.pinch(200, 500);
+		driver.pinch(200, 500);// 缩小屏幕
 
 	}
 
-	public String[] getDevices() {
+	public void getDevices() {
+		// 通过环境变量获取adb程序的路径，
+		String adbPath = System.getenv("ANDROID_HOME") + "/platform-tools/adb.exe";
+		File file = new File(adbPath);
 		String command = "adb logcat";
-		System.out.println(command);
-		ArrayList devices = new ArrayList();
-
-		try {
-			Process process = Runtime.getRuntime().exec(command);
-			BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-
-			String line = bufferedReader.readLine();
-			while (line != null) {
-				System.out.println(line);
-
-				// 写入文件
-				txtLog(line);
-				
-				//line = bufferedReader.readLine();
-			}
-			process.destroy();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return (String[]) devices.toArray(new String[] {});
+		execCommand(command);
+				/*String adbPath = System.getenv("ANDROID_HOME") + "/platform-tools/adb.exe";
+				File file = new File(adbPath);
+				if (file.exists()) {
+					System.out.println("请输入adb命令:");
+					Scanner scanner = new Scanner(System.in);
+					String command = scanner.nextLine();
+					// 开始执行命令
+					execCommand(command);
+				} else {
+					System.out.println("尚未配置AndroidSDK");
+				}*/
 
 	}
+	
+	// 执行命令函数
+		public static void execCommand(String cmd) {
+			BufferedReader inputStream = null;
+			BufferedReader errorStream = null;
+			try {
+				Process process = Runtime.getRuntime().exec(cmd);
+				// 获取正确的输入流
+				inputStream = new BufferedReader(new InputStreamReader(process.getInputStream()));
+				// 起新线程来将结果输出
+				readLine(inputStream);
+				// 获取错误的输入流
+				errorStream = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+				// 起新线程读取错误流
+				readLine(errorStream);
+
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		// 读取返回的结果
+		private static void readLine(final BufferedReader br) {
+			new Thread(new Runnable() {
+				@Override
+				public void run() {
+					String line = null;
+					StringBuffer str = new StringBuffer();
+					try {
+						// 循环读取输入流
+						while ((line = br.readLine()) != null) {
+//							System.out.println("@@@" + line);// 控制台输出
+							txtLog(line);
+
+						}
+						br.close();
+
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+			}).start();
+		}
 
 	// 写入文件
 	public static void txtLog(String str) {
 		FileWriter fw = null;
 		try {
 			// 如果文件存在，则追加内容；如果文件不存在，则创建文件
-			File f = new File("E:\\dd.txt");
+			File f = new File("E:\\log.txt");
 			fw = new FileWriter(f, true);
 		} catch (IOException e) {
 			e.printStackTrace();

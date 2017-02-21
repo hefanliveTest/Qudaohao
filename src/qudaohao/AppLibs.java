@@ -72,11 +72,11 @@ public class AppLibs {
 	// 滑动函数
 	public void swipefuc(AndroidDriver driver, String value) {
 		try {
-			Thread.sleep(3000);
+			Thread.sleep(500);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		driver.swipe(500, 600, 80, 600, 5000);
+		driver.swipe(500, 600, 580, 600, 500);//滑动函数
 	}
 
 	public WebElement element(AndroidDriver driver, int y) {
