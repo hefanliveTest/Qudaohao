@@ -26,7 +26,7 @@ import org.testng.annotations.Test;
 import io.appium.java_client.android.AndroidDriver;
 
 public class Qdhtest {
-//	private static AndroidDriver[] driver;
+	// private static AndroidDriver[] driver;
 	private static AndroidDriver driver;
 
 	String[] apks = { "hefanlive.apk", "app-SouGouYingYongShangDian-release.apk" };
@@ -52,10 +52,12 @@ public class Qdhtest {
 
 		capabilities.setCapability("unicodeKeyboard", "True");
 		capabilities.setCapability("resetKeyboard", "True");
+		System.out.println("%%%%%%%%%%%%%");
 		driver = new AndroidDriver(new URL("http://127.0.0.1:4723/wd/hub"), capabilities);
+		System.out.println("****************");
 
 		testcase();
-		
+
 	}
 
 	// @Test
@@ -64,51 +66,25 @@ public class Qdhtest {
 		// 执行adb
 		getDevices();
 
+		System.out.println("web");
 		WebDriverWait wait = new WebDriverWait(driver, 60);
-		WebElement e = wait.until(new ExpectedCondition<WebElement>() {
-			public WebElement apply(WebDriver d) {
+		Thread.sleep(30000);
 
-				return d.findElement(By.id("com.android.packageinstaller:id/permission_allow_button"));
-			}
-
-		});
-
-		AppLibs a = new AppLibs();
-
-		for (int i = 1; i <= 1; i++) {
-			System.out.println("for start i=" + i);
-			if (Xlsfile.isempty("hefanlive_testcase2", 1, i)) {
-				break;
-			}
-			WebElement elementname = a.element(driver, Xlsfile.search(Xlsfile.readxls("hefanlive_testcase2", 1, i)));
-
-			String execute = Xlsfile.readxls("hefanlive_testcase2", 2, i);
-			String value = Xlsfile.readxls("hefanlive_testcase2", 3, i);
-			a.execute(driver, elementname, execute, value);
-			
-		}
-
-		// driver.pinch(200, 500);// 缩小屏幕
-		// Thread.sleep(10000);//给10s钟，然后删除APP
-
+		System.out.println(i + "=======");
 		driver.removeApp("com.starunion.hefantv");
+		driver.quit();
 		i++;
+		System.out.println(i + "&&&&&&&&&&&&");
 		if (i < 2) {
 			Thread.sleep(5000);
 			setUp();
 		}
 
 	}
-	
+
 	@AfterTest(alwaysRun = true)
 	public void tearDown() throws Exception {
 
-		driver.removeApp("com.starunion.hefantv");
-		driver.quit();
-
-		// i++;
-		// System.out.println(i + "%$%%%%%%");
-		// setUp();
 	}
 
 	public static String compareQDH() {
