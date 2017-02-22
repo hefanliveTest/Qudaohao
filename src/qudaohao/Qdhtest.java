@@ -58,22 +58,23 @@ public class Qdhtest {
 		// driver.removeApp("io.appium.android.ime");
 
 		// 获取.txt中log中渠道号
-		getQDH();
+		//getQDH();
 
-		Thread.sleep(5000);
+		//Thread.sleep(5000);
 
 		driver.removeApp("com.starunion.hefantv");
+		driver.quit();
 
 		// i++;
 		// setUp();
 	}
 
-	public String compareQDH() {
+	public static String compareQDH() {
 		String content = Xlsfile.readxls("QDH", 3, 17);
 		return content;
 	}
 
-	public void getQDH() throws IOException {
+	public static void getQDH() throws IOException {
 		File file = new File("E:\\log.txt");
 		BufferedReader br = new BufferedReader(new FileReader(file));
 		String line = null;
@@ -171,7 +172,11 @@ public class Qdhtest {
 					// 循环读取输入流
 					while ((line = br.readLine()) != null) {
 						// System.out.println("@@@" + line);// 控制台输出
-						txtLog(line);
+						
+						//在此处直接获取渠道号
+						getQDH();
+						
+//						txtLog(line);
 
 					}
 					br.close();
