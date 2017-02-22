@@ -57,15 +57,13 @@ public class Qdhtest {
 		// driver.quit();
 		// driver.removeApp("io.appium.android.ime");
 
-//		driver.removeApp("com.starunion.hefantv");
-		
 		// 获取.txt中log中渠道号
 		getQDH();
-		
+
 		Thread.sleep(5000);
-		
+
 		driver.removeApp("com.starunion.hefantv");
-		
+
 		// i++;
 		// setUp();
 	}
@@ -81,27 +79,20 @@ public class Qdhtest {
 		String line = null;
 		while ((line = br.readLine()) != null) { // 一次读取一行
 			System.out.println(line);
-			//判断是否有&q_channel=
-			if(line.contains("&q_channel=")){
+			// 判断是否有&q_channel=
+			if (line.contains("&q_channel=")) {
 				String[] tmp = line.split("&q_channel="); // 根据--将每行数据拆分成一个数组
-				System.out.println(tmp[tmp.length-1]);//获取最后一个数即时渠道号
+				System.out.println(tmp[tmp.length - 1]);// 获取最后一个数即时渠道号
 				String content = compareQDH();
-				if(content.equals(tmp[tmp.length-1])){
+				if (content.equals(tmp[tmp.length - 1])) {
 					Xlsfile.writexls("QDH", 4, 17, "OK");
-				}else{
+				} else {
 					Xlsfile.writexls("QDH", 4, 17, "bad");
 				}
-				
+
 				break;
 			}
-			
-			/*for (int i = 0; i < tmp.length; i++) {
-				System.out.println("\t" + tmp[i]); // tmp[1]就是你想要的bb
-			}
-			if (line.endsWith("bb")) {
-				// 判断本行是否以bb结束
-				System.out.println("这是我想要的: " + tmp[1]);
-			}*/
+
 		}
 		br.close();
 
@@ -146,14 +137,6 @@ public class Qdhtest {
 		File file = new File(adbPath);
 		String command = "adb logcat";
 		execCommand(command);
-		/*
-		 * String adbPath = System.getenv("ANDROID_HOME") +
-		 * "/platform-tools/adb.exe"; File file = new File(adbPath); if
-		 * (file.exists()) { System.out.println("请输入adb命令:"); Scanner scanner =
-		 * new Scanner(System.in); String command = scanner.nextLine(); //
-		 * 开始执行命令 execCommand(command); } else {
-		 * System.out.println("尚未配置AndroidSDK"); }
-		 */
 
 	}
 
