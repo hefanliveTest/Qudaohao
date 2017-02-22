@@ -2,6 +2,7 @@ package qudaohao;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -26,8 +27,9 @@ import io.appium.java_client.android.AndroidDriver;
 public class Qdhtest {
 	private static AndroidDriver driver;
 
-	/*String[] apks = { "com.starunion.hefanlive" };
-	int i = 0;*/
+	/*
+	 * String[] apks = { "com.starunion.hefanlive" }; int i = 0;
+	 */
 
 	@BeforeSuite(alwaysRun = true)
 	public void setUp() throws Exception {
@@ -54,16 +56,62 @@ public class Qdhtest {
 	public void tearDown() throws Exception {
 		// driver.quit();
 		// driver.removeApp("io.appium.android.ime");
+
+//		driver.removeApp("com.starunion.hefantv");
+		
+		// 获取.txt中log中渠道号
+		getQDH();
+		
+		Thread.sleep(5000);
+		
 		driver.removeApp("com.starunion.hefantv");
+		
 		// i++;
-		setUp();
+		// setUp();
+	}
+
+	public String compareQDH() {
+		String content = Xlsfile.readxls("QDH", 3, 17);
+		return content;
+	}
+
+	public void getQDH() throws IOException {
+		File file = new File("E:\\log.txt");
+		BufferedReader br = new BufferedReader(new FileReader(file));
+		String line = null;
+		while ((line = br.readLine()) != null) { // 一次读取一行
+			System.out.println(line);
+			//判断是否有&q_channel=
+			if(line.contains("&q_channel=")){
+				String[] tmp = line.split("&q_channel="); // 根据--将每行数据拆分成一个数组
+				System.out.println(tmp[tmp.length-1]);//获取最后一个数即时渠道号
+				String content = compareQDH();
+				if(content.equals(tmp[tmp.length-1])){
+					Xlsfile.writexls("QDH", 4, 17, "OK");
+				}else{
+					Xlsfile.writexls("QDH", 4, 17, "bad");
+				}
+				
+				break;
+			}
+			
+			/*for (int i = 0; i < tmp.length; i++) {
+				System.out.println("\t" + tmp[i]); // tmp[1]就是你想要的bb
+			}
+			if (line.endsWith("bb")) {
+				// 判断本行是否以bb结束
+				System.out.println("这是我想要的: " + tmp[1]);
+			}*/
+		}
+		br.close();
+
 	}
 
 	@Test
 	public void testcase() throws IOException, InterruptedException {
 
 		// 执行adb
-		 getDevices();
+		getDevices();
 
 		WebDriverWait wait = new WebDriverWait(driver, 60);
 		WebElement e = wait.until(new ExpectedCondition<WebElement>() {
@@ -93,67 +141,64 @@ public class Qdhtest {
 	}
 
 	public void getDevices() {
-		// 通过环境变量获取adb程序的路径，
+		// 通过环境变量获取adb程序的路径
 		String adbPath = System.getenv("ANDROID_HOME") + "/platform-tools/adb.exe";
 		File file = new File(adbPath);
 		String command = "adb logcat";
 		execCommand(command);
-				/*String adbPath = System.getenv("ANDROID_HOME") + "/platform-tools/adb.exe";
-				File file = new File(adbPath);
-				if (file.exists()) {
-					System.out.println("请输入adb命令:");
-					Scanner scanner = new Scanner(System.in);
-					String command = scanner.nextLine();
-					// 开始执行命令
-					execCommand(command);
-				} else {
-					System.out.println("尚未配置AndroidSDK");
-				}*/
+		/*
+		 * String adbPath = System.getenv("ANDROID_HOME") +
+		 * "/platform-tools/adb.exe"; File file = new File(adbPath); if
+		 * (file.exists()) { System.out.println("请输入adb命令:"); Scanner scanner =
+		 * new Scanner(System.in); String command = scanner.nextLine(); //
+		 * 开始执行命令 execCommand(command); } else {
+		 * System.out.println("尚未配置AndroidSDK"); }
+		 */
 
 	}
-	
+
 	// 执行命令函数
-		public static void execCommand(String cmd) {
-			BufferedReader inputStream = null;
-			BufferedReader errorStream = null;
-			try {
-				Process process = Runtime.getRuntime().exec(cmd);
-				// 获取正确的输入流
-				inputStream = new BufferedReader(new InputStreamReader(process.getInputStream()));
-				// 起新线程来将结果输出
-				readLine(inputStream);
-				// 获取错误的输入流
-				errorStream = new BufferedReader(new InputStreamReader(process.getErrorStream()));
-				// 起新线程读取错误流
-				readLine(errorStream);
+	public static void execCommand(String cmd) {
+		BufferedReader inputStream = null;
+		BufferedReader errorStream = null;
+		try {
+			Process process = Runtime.getRuntime().exec(cmd);
+			// 获取正确的输入流
+			inputStream = new BufferedReader(new InputStreamReader(process.getInputStream()));
+			// 起新线程来将结果输出
+			readLine(inputStream);
+			// 获取错误的输入流
+			errorStream = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+			// 起新线程读取错误流
+			readLine(errorStream);
 
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
-		
-		// 读取返回的结果
-		private static void readLine(final BufferedReader br) {
-			new Thread(new Runnable() {
-				@Override
-				public void run() {
-					String line = null;
-					StringBuffer str = new StringBuffer();
-					try {
-						// 循环读取输入流
-						while ((line = br.readLine()) != null) {
-//							System.out.println("@@@" + line);// 控制台输出
-							txtLog(line);
+	}
 
-						}
-						br.close();
+	// 读取返回的结果
+	private static void readLine(final BufferedReader br) {
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				String line = null;
+				StringBuffer str = new StringBuffer();
+				try {
+					// 循环读取输入流
+					while ((line = br.readLine()) != null) {
+						// System.out.println("@@@" + line);// 控制台输出
+						txtLog(line);
 
-					} catch (IOException e) {
-						e.printStackTrace();
 					}
+					br.close();
+
+				} catch (IOException e) {
+					e.printStackTrace();
 				}
-			}).start();
-		}
+			}
+		}).start();
+	}
 
 	// 写入文件
 	public static void txtLog(String str) {
@@ -176,4 +221,6 @@ public class Qdhtest {
 			e.printStackTrace();
 		}
 	}
+
+	// 获取log后，进行对比
 }
