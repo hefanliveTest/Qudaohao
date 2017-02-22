@@ -7,6 +7,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -25,18 +26,21 @@ import org.testng.annotations.Test;
 import io.appium.java_client.android.AndroidDriver;
 
 public class Qdhtest {
+//	private static AndroidDriver[] driver;
 	private static AndroidDriver driver;
 
-	/*
-	 * String[] apks = { "com.starunion.hefanlive" }; int i = 0;
-	 */
+	String[] apks = { "hefanlive.apk", "app-SouGouYingYongShangDian-release.apk" };
+	static int i = 0;
 
-	@BeforeSuite(alwaysRun = true)
+	File classpathRoot = new File(System.getProperty("user.dir"));
+	File appDir = new File(classpathRoot, "apps");
+
+	@Test
 	public void setUp() throws Exception {
 		// set up appium
-		File classpathRoot = new File(System.getProperty("user.dir"));
-		File appDir = new File(classpathRoot, "apps");
-		File app = new File(appDir, "hefanlive.apk");
+		// File classpathRoot = new File(System.getProperty("user.dir"));
+		// File appDir = new File(classpathRoot, "apps");
+		File app = new File(appDir, apks[i]);
 		DesiredCapabilities capabilities = new DesiredCapabilities();
 		capabilities.setCapability(CapabilityType.BROWSER_NAME, "");
 		capabilities.setCapability("platformName", "Android");
@@ -44,63 +48,18 @@ public class Qdhtest {
 		capabilities.setCapability("platformVersion", "5.1.1");
 		capabilities.setCapability("app", app.getAbsolutePath());
 		capabilities.setCapability("appPackage", "com.starunion.hefantv");
-		// capabilities.setCapability("appPackage", apks[i]);
 		capabilities.setCapability("appActivity", "com.sagacreate.boxlunch.activity.SplashActivity");
 
 		capabilities.setCapability("unicodeKeyboard", "True");
 		capabilities.setCapability("resetKeyboard", "True");
 		driver = new AndroidDriver(new URL("http://127.0.0.1:4723/wd/hub"), capabilities);
+
+		testcase();
+		
 	}
 
-	@AfterTest(alwaysRun = true)
-	public void tearDown() throws Exception {
-		// driver.quit();
-		// driver.removeApp("io.appium.android.ime");
-
-		// 获取.txt中log中渠道号
-		//getQDH();
-
-		//Thread.sleep(5000);
-
-		driver.removeApp("com.starunion.hefantv");
-		driver.quit();
-
-		// i++;
-		// setUp();
-	}
-
-	public static String compareQDH() {
-		String content = Xlsfile.readxls("QDH", 3, 17);
-		return content;
-	}
-
-	public static void getQDH() throws IOException {
-		File file = new File("E:\\log.txt");
-		BufferedReader br = new BufferedReader(new FileReader(file));
-		String line = null;
-		while ((line = br.readLine()) != null) { // 一次读取一行
-			System.out.println(line);
-			// 判断是否有&q_channel=
-			if (line.contains("&q_channel=")) {
-				String[] tmp = line.split("&q_channel="); // 根据--将每行数据拆分成一个数组
-				System.out.println(tmp[tmp.length - 1]);// 获取最后一个数即时渠道号
-				String content = compareQDH();
-				if (content.equals(tmp[tmp.length - 1])) {
-					Xlsfile.writexls("QDH", 4, 17, "OK");
-				} else {
-					Xlsfile.writexls("QDH", 4, 17, "bad");
-				}
-
-				break;
-			}
-
-		}
-		br.close();
-
-	}
-
-	@Test
-	public void testcase() throws IOException, InterruptedException {
+	// @Test
+	public void testcase() throws Exception {
 
 		// 执行adb
 		getDevices();
@@ -126,10 +85,35 @@ public class Qdhtest {
 			String execute = Xlsfile.readxls("hefanlive_testcase2", 2, i);
 			String value = Xlsfile.readxls("hefanlive_testcase2", 3, i);
 			a.execute(driver, elementname, execute, value);
+			
 		}
 
-		driver.pinch(200, 500);// 缩小屏幕
+		// driver.pinch(200, 500);// 缩小屏幕
+		// Thread.sleep(10000);//给10s钟，然后删除APP
 
+		driver.removeApp("com.starunion.hefantv");
+		i++;
+		if (i < 2) {
+			Thread.sleep(5000);
+			setUp();
+		}
+
+	}
+	
+	@AfterTest(alwaysRun = true)
+	public void tearDown() throws Exception {
+
+		driver.removeApp("com.starunion.hefantv");
+		driver.quit();
+
+		// i++;
+		// System.out.println(i + "%$%%%%%%");
+		// setUp();
+	}
+
+	public static String compareQDH() {
+		String content = Xlsfile.readxls("QDH", 3, (i + 1));
+		return content;
 	}
 
 	public void getDevices() {
@@ -172,12 +156,21 @@ public class Qdhtest {
 					// 循环读取输入流
 					while ((line = br.readLine()) != null) {
 						// System.out.println("@@@" + line);// 控制台输出
-						
-						//在此处直接获取渠道号
-						getQDH();
-						
-//						txtLog(line);
 
+						// 判断是否有&q_channel=
+						if (line.contains("&q_channel=")) {
+							String[] tmp = line.split("&q_channel="); // 根据--将每行数据拆分成一个数组
+							System.out.println(tmp[tmp.length - 1]);// 获取最后一个数即时渠道号
+							txtLog(tmp[tmp.length - 1]);// 保存渠道号
+							String content = compareQDH();
+							if (content.equals(tmp[tmp.length - 1])) {
+								Xlsfile.writexls("QDH", 4, (i + 1), "OK");
+							} else {
+								Xlsfile.writexls("QDH", 4, (i + 1), "bad");
+							}
+
+							break;
+						}
 					}
 					br.close();
 
@@ -210,5 +203,4 @@ public class Qdhtest {
 		}
 	}
 
-	// 获取log后，进行对比
 }
