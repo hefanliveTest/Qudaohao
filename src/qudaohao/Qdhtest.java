@@ -9,7 +9,9 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Scanner;
 
 import org.openqa.selenium.By;
@@ -23,6 +25,8 @@ import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.Test;
 
+import com.sun.jna.platform.unix.X11.XClientMessageEvent.Data;
+
 import io.appium.java_client.android.AndroidDriver;
 
 public class Qdhtest {
@@ -34,6 +38,40 @@ public class Qdhtest {
 
 	File classpathRoot = new File(System.getProperty("user.dir"));
 	File appDir = new File(classpathRoot, "apps");
+	File appLog = new File(classpathRoot,"qudaohao");
+	File f=new File(appLog, "log.txt");
+
+	// 把当前运行时间写入TXT文件
+	@BeforeSuite
+	public void getTime() {
+		//记录log抓取的时间
+		Date d = new Date();
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		String dateNowStr = sdf.format(d);
+
+		FileWriter fw = null;
+		try {
+			// 如果文件存在，则追加内容；如果文件不存在，则创建文件
+//			File f = new File("E:\\log.txt");	
+			File classpathRoot = new File(System.getProperty("user.dir"));
+			File appLog = new File(classpathRoot,"qudaohao");
+			File f=new File(appLog, "log.txt");
+			fw = new FileWriter(f, true);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		PrintWriter pw = new PrintWriter(fw);
+		pw.println(dateNowStr);
+		pw.flush();
+		try {
+			fw.flush();
+			pw.close();
+			fw.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+	}
 
 	@Test
 	public void setUp() throws Exception {
@@ -53,11 +91,15 @@ public class Qdhtest {
 		capabilities.setCapability("unicodeKeyboard", "True");
 		capabilities.setCapability("resetKeyboard", "True");
 		System.out.println("%%%%%%%%%%%%%");
+		
 		driver = new AndroidDriver(new URL("http://127.0.0.1:4723/wd/hub"), capabilities);
+		
+		/*//允许USB安装
+		WebElement e = driver.findElement(By.id("com.miui.securitycenter:id/allow_button"));
+		e.click();*/
+		
 		System.out.println("****************");
-
 		testcase();
-
 	}
 
 	// @Test
@@ -67,8 +109,8 @@ public class Qdhtest {
 		getDevices();
 
 		System.out.println("web");
-		WebDriverWait wait = new WebDriverWait(driver, 60);
-		Thread.sleep(30000);
+//		WebDriverWait wait = new WebDriverWait(driver, 60);
+		Thread.sleep(5000);
 
 		System.out.println(i + "=======");
 		driver.removeApp("com.starunion.hefantv");
@@ -84,7 +126,6 @@ public class Qdhtest {
 
 	@AfterTest(alwaysRun = true)
 	public void tearDown() throws Exception {
-
 	}
 
 	public static String compareQDH() {
@@ -162,7 +203,10 @@ public class Qdhtest {
 		FileWriter fw = null;
 		try {
 			// 如果文件存在，则追加内容；如果文件不存在，则创建文件
-			File f = new File("E:\\log.txt");
+//			File f = new File("E:\\log.txt");
+			File classpathRoot = new File(System.getProperty("user.dir"));
+			File appLog = new File(classpathRoot,"qudaohao");
+			File f=new File(appLog, "log.txt");
 			fw = new FileWriter(f, true);
 		} catch (IOException e) {
 			e.printStackTrace();

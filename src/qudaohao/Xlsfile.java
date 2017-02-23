@@ -13,10 +13,16 @@ import jxl.write.WritableSheet;
 import jxl.write.WritableWorkbook;
 
 public class Xlsfile {
+	
+	File classpathRoot = new File(System.getProperty("user.dir"));
+	File appDir = new File(classpathRoot,"qudaohao");
+	File f = new File(appDir,"testcase.xls");
 
 	public static String readxls(String sheetname, int x, int y) {
-		// File f=new File("E:"+File.separator+"ldtest.xls");
-		File f = new File("E:" + File.separator + "testcase.xls");
+		File classpathRoot = new File(System.getProperty("user.dir"));
+		File appDir = new File(classpathRoot,"qudaohao");
+		File f = new File(appDir,"testcase.xls");
+//		File f = new File("E:" + File.separator + "testcase.xls");
 		// 这是我自己建的，位于E:\dataAnalysis文件夹中的test.xls
 		String cellname = null;
 		try {
@@ -37,9 +43,9 @@ public class Xlsfile {
 	}
 
 	public static boolean isempty(String sheetname, int x, int y) {
-		// File f=new File("E:"+File.separator+"ldtest.xls");
-		File f = new File("E:" + File.separator + "testcase.xls");
-		// 这是我自己建的，位于E:\dataAnalysis文件夹中的test.xls
+		File classpathRoot = new File(System.getProperty("user.dir"));
+		File appDir = new File(classpathRoot,"qudaohao");
+		File f = new File(appDir,"testcase.xls");
 		boolean result = true;
 		try {
 			Workbook book = Workbook.getWorkbook(f);//
@@ -62,8 +68,9 @@ public class Xlsfile {
 		int i = 1;
 		try {
 
-			// File f=new File("E:"+File.separator+"ldtest.xls");
-			File f = new File("E:" + File.separator + "testcase.xls");
+			File classpathRoot = new File(System.getProperty("user.dir"));
+			File appDir = new File(classpathRoot,"qudaohao");
+			File f = new File(appDir,"testcase.xls");
 			for (; i > 0; i++) {
 				Workbook book = Workbook.getWorkbook(f);//
 				Sheet sheet = book.getSheet("hefanlive_object"); // 获得第一个工作表对象
@@ -86,8 +93,13 @@ public class Xlsfile {
 
 	public static void writexls(String sheetname, int x, int y, String value) {
 		try {
-			Workbook wb = Workbook.getWorkbook(new File("e:\\testcase.xls"));
-			WritableWorkbook book = Workbook.createWorkbook(new File("e:\\testcase.xls"), wb);
+			
+			File classpathRoot = new File(System.getProperty("user.dir"));
+			File appDir = new File(classpathRoot,"qudaohao");
+			File f = new File(appDir,"testcase.xls");
+			
+			Workbook wb = Workbook.getWorkbook(f);
+			WritableWorkbook book = Workbook.createWorkbook(f, wb);
 
 			WritableSheet sheet = book.getSheet(sheetname);
 			sheet.addCell(new Label(x, y, value));
