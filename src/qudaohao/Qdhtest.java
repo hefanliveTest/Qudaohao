@@ -117,7 +117,7 @@ public class Qdhtest {
 		driver.quit();
 		i++;
 		System.out.println(i + "&&&&&&&&&&&&");
-		if (i < 2) {
+		if (i < apks.length) {
 			Thread.sleep(5000);
 			setUp();
 		}
