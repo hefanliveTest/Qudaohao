@@ -33,8 +33,11 @@ public class Qdhtest {
 	// private static AndroidDriver[] driver;
 	private static AndroidDriver driver;
 
-	String[] apks = { "hefanlive.apk", "app-SouGouYingYongShangDian-release.apk" };
+	String[] apks = {"app-A_SC_ShenMa-release.apk", "app-SouGouYingYongShangDian-release.apk" };
 	static int i = 0;
+	
+	//记录第一次bad的apk
+	static int y = 0;
 
 	File classpathRoot = new File(System.getProperty("user.dir"));
 	File appDir = new File(classpathRoot, "apps");
@@ -90,7 +93,7 @@ public class Qdhtest {
 
 		capabilities.setCapability("unicodeKeyboard", "True");
 		capabilities.setCapability("resetKeyboard", "True");
-		System.out.println("%%%%%%%%%%%%%");
+		System.out.println("开始安装apk");
 		
 		driver = new AndroidDriver(new URL("http://127.0.0.1:4723/wd/hub"), capabilities);
 		
@@ -98,7 +101,7 @@ public class Qdhtest {
 		WebElement e = driver.findElement(By.id("com.miui.securitycenter:id/allow_button"));
 		e.click();*/
 		
-		System.out.println("****************");
+		System.out.println("apk安装启动");
 		testcase();
 	}
 
@@ -108,7 +111,6 @@ public class Qdhtest {
 		// 执行adb
 		getDevices();
 
-		System.out.println("web");
 //		WebDriverWait wait = new WebDriverWait(driver, 60);
 		Thread.sleep(5000);
 
@@ -120,8 +122,38 @@ public class Qdhtest {
 		if (i < apks.length) {
 			Thread.sleep(5000);
 			setUp();
+		}else{
+			setUpFirstBad();
 		}
 
+	}
+
+	public void setUpFirstBad() throws Exception {
+		//查找xls文件，获取第一个bad
+		int raw = Xlsfile.search("bad");//返回bad所在行号
+		System.out.println("第一个bad所在行号"+raw);
+		File app = new File(appDir, apks[raw]);
+		DesiredCapabilities capabilities = new DesiredCapabilities();
+		capabilities.setCapability(CapabilityType.BROWSER_NAME, "");
+		capabilities.setCapability("platformName", "Android");
+		capabilities.setCapability("deviceName", "Android Emulator");
+		capabilities.setCapability("platformVersion", "5.1.1");
+		capabilities.setCapability("app", app.getAbsolutePath());
+		capabilities.setCapability("appPackage", "com.starunion.hefantv");
+		capabilities.setCapability("appActivity", "com.sagacreate.boxlunch.activity.SplashActivity");
+
+		capabilities.setCapability("unicodeKeyboard", "True");
+		capabilities.setCapability("resetKeyboard", "True");
+		System.out.println("开始安装第一个bad的apk");
+		
+		driver = new AndroidDriver(new URL("http://127.0.0.1:4723/wd/hub"), capabilities);
+		
+		/*//允许USB安装
+		WebElement e = driver.findElement(By.id("com.miui.securitycenter:id/allow_button"));
+		e.click();*/
+		
+		System.out.println("apk安装启动");
+		
 	}
 
 	@AfterTest(alwaysRun = true)
@@ -182,8 +214,10 @@ public class Qdhtest {
 							String content = compareQDH();
 							if (content.equals(tmp[tmp.length - 1])) {
 								Xlsfile.writexls("QDH", 4, (i + 1), "OK");
+								System.out.println("OK");
 							} else {
 								Xlsfile.writexls("QDH", 4, (i + 1), "bad");
+								System.out.println("bad");
 							}
 
 							break;
