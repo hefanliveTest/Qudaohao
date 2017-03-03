@@ -33,7 +33,7 @@ public class Qdhtest {
 	// private static AndroidDriver[] driver;
 	private static AndroidDriver driver;
 
-	String[] apks = {"app-A_SC_ShenMa-release.apk", "app-SouGouYingYongShangDian-release.apk" };
+	String[] apks = {"app-BaiDuShouJiZhuShou-release.apk", "app-_360ShouJiZhuShou-release.apk" };
 	static int i = 0;
 	
 	//记录第一次bad的apk
@@ -83,10 +83,11 @@ public class Qdhtest {
 		// File appDir = new File(classpathRoot, "apps");
 		File app = new File(appDir, apks[i]);
 		DesiredCapabilities capabilities = new DesiredCapabilities();
+		capabilities.setCapability("noSign","True");
 		capabilities.setCapability(CapabilityType.BROWSER_NAME, "");
 		capabilities.setCapability("platformName", "Android");
 		capabilities.setCapability("deviceName", "Android Emulator");
-		capabilities.setCapability("platformVersion", "5.1.1");
+		capabilities.setCapability("platformVersion", "6.0");
 		capabilities.setCapability("app", app.getAbsolutePath());
 		capabilities.setCapability("appPackage", "com.starunion.hefantv");
 		capabilities.setCapability("appActivity", "com.sagacreate.boxlunch.activity.SplashActivity");
@@ -102,6 +103,7 @@ public class Qdhtest {
 		e.click();*/
 		
 		System.out.println("apk安装启动");
+		Thread.sleep(5000);
 		testcase();
 	}
 
@@ -114,11 +116,11 @@ public class Qdhtest {
 //		WebDriverWait wait = new WebDriverWait(driver, 60);
 		Thread.sleep(5000);
 
-		System.out.println(i + "=======");
+		System.out.println("第"+(i+1)+"个apk运行完毕");
 		driver.removeApp("com.starunion.hefantv");
 		driver.quit();
 		i++;
-		System.out.println(i + "&&&&&&&&&&&&");
+//		System.out.println(i + "&&&&&&&&&&&&");
 		if (i < apks.length) {
 			Thread.sleep(5000);
 			setUp();
@@ -134,10 +136,11 @@ public class Qdhtest {
 		System.out.println("第一个bad所在行号"+raw);
 		File app = new File(appDir, apks[raw]);
 		DesiredCapabilities capabilities = new DesiredCapabilities();
+		capabilities.setCapability("noSign","True");
 		capabilities.setCapability(CapabilityType.BROWSER_NAME, "");
 		capabilities.setCapability("platformName", "Android");
 		capabilities.setCapability("deviceName", "Android Emulator");
-		capabilities.setCapability("platformVersion", "5.1.1");
+		capabilities.setCapability("platformVersion", "6.0");
 		capabilities.setCapability("app", app.getAbsolutePath());
 		capabilities.setCapability("appPackage", "com.starunion.hefantv");
 		capabilities.setCapability("appActivity", "com.sagacreate.boxlunch.activity.SplashActivity");
