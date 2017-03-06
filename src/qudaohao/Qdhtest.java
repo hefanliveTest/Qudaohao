@@ -32,9 +32,9 @@ import io.appium.java_client.android.AndroidDriver;
 public class Qdhtest {
 	private static AndroidDriver driver;
 
-	// "app-LeshiYingYongShangDian-release.apk",
-	static String[] apks = { "app-A_SC_ShenMa-release.apk", "app-_360ShouJiZhuShou-release.apk",
-			"app-BaiDuShouJiZhuShou-release.apk", };
+	// "app-LeshiYingYongShangDian-release.apk",, "app-_360ShouJiZhuShou-release.apk",
+	//"app-SouGouYingYongShangDian-release.apk"
+	static String[] apks = { "app-A_SC_ShenMa-release.apk"};
 	static int i = 0;
 	static boolean flag = false;
 
@@ -232,7 +232,7 @@ public class Qdhtest {
 							String content = compareQDH();
 							if (content.equals(tmp[tmp.length - 1])) {
 								Xlsfile.writexls("QDH", 4, (i + 1), "OK");
-								System.out.println("渠道包" + apks[i] + content + "=" + tmp[tmp.length - 1] + "——OK");
+								System.out.println("渠道包" + apks[i] +"---"+ content + "=" + tmp[tmp.length - 1] + "——OK");
 							} else {
 								Xlsfile.writexls("QDH", 4, (i + 1), "bad");
 								System.out.println(content + "!=" + tmp[tmp.length - 1] + "——bad");
