@@ -30,24 +30,26 @@ import com.sun.jna.platform.unix.X11.XClientMessageEvent.Data;
 import io.appium.java_client.android.AndroidDriver;
 
 public class Qdhtest {
-	// private static AndroidDriver[] driver;
 	private static AndroidDriver driver;
 
-	String[] apks = {"app-BaiDuShouJiZhuShou-release.apk", "app-_360ShouJiZhuShou-release.apk" };
+	// "app-LeshiYingYongShangDian-release.apk",
+	static String[] apks = { "app-A_SC_ShenMa-release.apk", "app-_360ShouJiZhuShou-release.apk",
+			"app-BaiDuShouJiZhuShou-release.apk", };
 	static int i = 0;
-	
-	//记录第一次bad的apk
+	static boolean flag = false;
+
+	// 记录第一次bad的apk
 	static int y = 0;
 
 	File classpathRoot = new File(System.getProperty("user.dir"));
 	File appDir = new File(classpathRoot, "apps");
-	File appLog = new File(classpathRoot,"qudaohao");
-	File f=new File(appLog, "log.txt");
+	File appLog = new File(classpathRoot, "qudaohao");
+	File f = new File(appLog, "log.txt");
 
 	// 把当前运行时间写入TXT文件
 	@BeforeSuite
 	public void getTime() {
-		//记录log抓取的时间
+		// 记录log抓取的时间
 		Date d = new Date();
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		String dateNowStr = sdf.format(d);
@@ -55,10 +57,10 @@ public class Qdhtest {
 		FileWriter fw = null;
 		try {
 			// 如果文件存在，则追加内容；如果文件不存在，则创建文件
-//			File f = new File("E:\\log.txt");	
+			// File f = new File("E:\\log.txt");
 			File classpathRoot = new File(System.getProperty("user.dir"));
-			File appLog = new File(classpathRoot,"qudaohao");
-			File f=new File(appLog, "log.txt");
+			File appLog = new File(classpathRoot, "qudaohao");
+			File f = new File(appLog, "log.txt");
 			fw = new FileWriter(f, true);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -78,12 +80,13 @@ public class Qdhtest {
 
 	@Test
 	public void setUp() throws Exception {
+
+		flag = false;
+
 		// set up appium
-		// File classpathRoot = new File(System.getProperty("user.dir"));
-		// File appDir = new File(classpathRoot, "apps");
 		File app = new File(appDir, apks[i]);
 		DesiredCapabilities capabilities = new DesiredCapabilities();
-		capabilities.setCapability("noSign","True");
+		capabilities.setCapability("noSign", "True");
 		capabilities.setCapability(CapabilityType.BROWSER_NAME, "");
 		capabilities.setCapability("platformName", "Android");
 		capabilities.setCapability("deviceName", "Android Emulator");
@@ -94,15 +97,17 @@ public class Qdhtest {
 
 		capabilities.setCapability("unicodeKeyboard", "True");
 		capabilities.setCapability("resetKeyboard", "True");
-		System.out.println("开始安装apk");
-		
+		 System.out.println("开始安装apk...");
+
 		driver = new AndroidDriver(new URL("http://127.0.0.1:4723/wd/hub"), capabilities);
-		
-		/*//允许USB安装
-		WebElement e = driver.findElement(By.id("com.miui.securitycenter:id/allow_button"));
-		e.click();*/
-		
-		System.out.println("apk安装启动");
+
+		/*
+		 * //允许USB安装 WebElement e =
+		 * driver.findElement(By.id("com.miui.securitycenter:id/allow_button"));
+		 * e.click();
+		 */
+
+		// System.out.println("apk安装启动");
 		Thread.sleep(5000);
 		testcase();
 	}
@@ -113,30 +118,34 @@ public class Qdhtest {
 		// 执行adb
 		getDevices();
 
-//		WebDriverWait wait = new WebDriverWait(driver, 60);
+		// WebDriverWait wait = new WebDriverWait(driver, 60);
 		Thread.sleep(5000);
 
-		System.out.println("第"+(i+1)+"个apk运行完毕");
+		if (flag == false) {
+			System.out.println("第" + (i + 1) + "个apk没有抓到渠道号");
+		}
+
+		System.out.println("第" + (i + 1) + "个apk运行完毕**************************");
+
 		driver.removeApp("com.starunion.hefantv");
 		driver.quit();
 		i++;
-//		System.out.println(i + "&&&&&&&&&&&&");
 		if (i < apks.length) {
 			Thread.sleep(5000);
 			setUp();
-		}else{
+		} else {
 			setUpFirstBad();
 		}
 
 	}
 
 	public void setUpFirstBad() throws Exception {
-		//查找xls文件，获取第一个bad
-		int raw = Xlsfile.search("bad");//返回bad所在行号
-		System.out.println("第一个bad所在行号"+raw);
+		// 查找xls文件，获取第一个bad
+		int raw = Xlsfile.search("bad");// 返回bad所在行号
+		System.out.println("第一个bad所在行号" + raw);
 		File app = new File(appDir, apks[raw]);
 		DesiredCapabilities capabilities = new DesiredCapabilities();
-		capabilities.setCapability("noSign","True");
+		capabilities.setCapability("noSign", "True");// 去除appium的签名
 		capabilities.setCapability(CapabilityType.BROWSER_NAME, "");
 		capabilities.setCapability("platformName", "Android");
 		capabilities.setCapability("deviceName", "Android Emulator");
@@ -148,15 +157,17 @@ public class Qdhtest {
 		capabilities.setCapability("unicodeKeyboard", "True");
 		capabilities.setCapability("resetKeyboard", "True");
 		System.out.println("开始安装第一个bad的apk");
-		
+
 		driver = new AndroidDriver(new URL("http://127.0.0.1:4723/wd/hub"), capabilities);
-		
-		/*//允许USB安装
-		WebElement e = driver.findElement(By.id("com.miui.securitycenter:id/allow_button"));
-		e.click();*/
-		
+
+		/*
+		 * //允许USB安装 WebElement e =
+		 * driver.findElement(By.id("com.miui.securitycenter:id/allow_button"));
+		 * e.click();
+		 */
+
 		System.out.println("apk安装启动");
-		
+
 	}
 
 	@AfterTest(alwaysRun = true)
@@ -199,6 +210,7 @@ public class Qdhtest {
 
 	// 读取返回的结果
 	private static void readLine(final BufferedReader br) {
+
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
@@ -211,16 +223,19 @@ public class Qdhtest {
 
 						// 判断是否有&q_channel=
 						if (line.contains("&q_channel=")) {
+
+							flag = true;
+
 							String[] tmp = line.split("&q_channel="); // 根据--将每行数据拆分成一个数组
 							System.out.println(tmp[tmp.length - 1]);// 获取最后一个数即时渠道号
 							txtLog(tmp[tmp.length - 1]);// 保存渠道号
 							String content = compareQDH();
 							if (content.equals(tmp[tmp.length - 1])) {
 								Xlsfile.writexls("QDH", 4, (i + 1), "OK");
-								System.out.println("OK");
+								System.out.println("渠道包" + apks[i] + content + "=" + tmp[tmp.length - 1] + "——OK");
 							} else {
 								Xlsfile.writexls("QDH", 4, (i + 1), "bad");
-								System.out.println("bad");
+								System.out.println(content + "!=" + tmp[tmp.length - 1] + "——bad");
 							}
 
 							break;
@@ -240,10 +255,10 @@ public class Qdhtest {
 		FileWriter fw = null;
 		try {
 			// 如果文件存在，则追加内容；如果文件不存在，则创建文件
-//			File f = new File("E:\\log.txt");
+			// File f = new File("E:\\log.txt");
 			File classpathRoot = new File(System.getProperty("user.dir"));
-			File appLog = new File(classpathRoot,"qudaohao");
-			File f=new File(appLog, "log.txt");
+			File appLog = new File(classpathRoot, "qudaohao");
+			File f = new File(appLog, "log.txt");
 			fw = new FileWriter(f, true);
 		} catch (IOException e) {
 			e.printStackTrace();
