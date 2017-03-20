@@ -74,7 +74,8 @@ public class Xlsfile {
 			for (; i > 0; i++) {
 				Workbook book = Workbook.getWorkbook(f);//
 				Sheet sheet = book.getSheet("hefanlive_object"); // 获得第一个工作表对象
-				Cell cell = sheet.getCell(1, i);
+//				Cell cell = sheet.getCell(1, i);
+				Cell cell = sheet.getCell(4, i);
 				if (cell.getType() == CellType.EMPTY) {
 					i = 0;
 					break;

@@ -32,17 +32,20 @@ import io.appium.java_client.android.AndroidDriver;
 public class Qdhtest {
 	private static AndroidDriver driver;
 
-	// "app-LeshiYingYongShangDian-release.apk",, "app-_360ShouJiZhuShou-release.apk",
-	//"app-SouGouYingYongShangDian-release.apk"
-	static String[] apks = { "app-A_SC_ShenMa-release.apk"};
+	// "app-LeshiYingYongShangDian-release.apk",,
+	// "app-_360ShouJiZhuShou-release.apk",
+	// "app-SouGouYingYongShangDian-release.apk"
+	static String[] apks = {"app-A_SC_ShenMa-release.apk","SouGouYingYongShangDian-release.apk", "app-SouGouYingYongShangDian-release.apk" };
+	
 	static int i = 0;
-	static boolean flag = false;
-
-	// 记录第一次bad的apk
-	static int y = 0;
+	static boolean flag = false;//能否抓到渠道号
+	boolean apkFlag = false;//Apps中是否有对应的apk
+	static int[] badApk;//第一个bad的apk行号
+	static int y = 0;//// 记录第一次bad的apk
 
 	File classpathRoot = new File(System.getProperty("user.dir"));
 	File appDir = new File(classpathRoot, "apps");
+
 	File appLog = new File(classpathRoot, "qudaohao");
 	File f = new File(appLog, "log.txt");
 
@@ -82,6 +85,7 @@ public class Qdhtest {
 	public void setUp() throws Exception {
 
 		flag = false;
+		apkFlag = false;
 
 		// set up appium
 		File app = new File(appDir, apks[i]);
@@ -92,14 +96,37 @@ public class Qdhtest {
 		capabilities.setCapability("deviceName", "Android Emulator");
 		capabilities.setCapability("platformVersion", "6.0");
 		capabilities.setCapability("app", app.getAbsolutePath());
+
 		capabilities.setCapability("appPackage", "com.starunion.hefantv");
 		capabilities.setCapability("appActivity", "com.sagacreate.boxlunch.activity.SplashActivity");
 
 		capabilities.setCapability("unicodeKeyboard", "True");
 		capabilities.setCapability("resetKeyboard", "True");
-		 System.out.println("开始安装apk...");
 
-		driver = new AndroidDriver(new URL("http://127.0.0.1:4723/wd/hub"), capabilities);
+		// 获取Apps中所有的apk名字
+		String path = appDir.getAbsolutePath();
+		System.out.println(path + "---路径");
+		File appFiles = new File(path);
+		// 获取该文件夹的文件数，存入数组
+		File[] tempList = appFiles.listFiles();
+		// 判断
+		for (int k = 0; k < tempList.length; k++) {
+			if (apks[i].equals(tempList[k].getName())) {
+				apkFlag = true;// 找到对应的apk则设置为ture
+				break;
+			}
+		}
+
+		if (apkFlag == true) {
+			System.out.println("开始安装apk。。。");
+			driver = new AndroidDriver(new URL("http://127.0.0.1:4723/wd/hub"), capabilities);
+		} else {
+			System.out.println(apks[i] + "没有找到");
+			i++;
+			setUp();
+		}
+
+		// driver.installApp(app.getAbsolutePath());
 
 		/*
 		 * //允许USB安装 WebElement e =
@@ -112,7 +139,6 @@ public class Qdhtest {
 		testcase();
 	}
 
-	// @Test
 	public void testcase() throws Exception {
 
 		// 执行adb
@@ -141,9 +167,9 @@ public class Qdhtest {
 
 	public void setUpFirstBad() throws Exception {
 		// 查找xls文件，获取第一个bad
-		int raw = Xlsfile.search("bad");// 返回bad所在行号
-		System.out.println("第一个bad所在行号" + raw);
-		File app = new File(appDir, apks[raw]);
+//		int raw = Xlsfile.search("bad");// 返回bad所在行号
+		System.out.println("第一个bad所在行号" + badApk[0]);
+		File app = new File(appDir, apks[badApk[0]]);
 		DesiredCapabilities capabilities = new DesiredCapabilities();
 		capabilities.setCapability("noSign", "True");// 去除appium的签名
 		capabilities.setCapability(CapabilityType.BROWSER_NAME, "");
@@ -166,12 +192,23 @@ public class Qdhtest {
 		 * e.click();
 		 */
 
-		System.out.println("apk安装启动");
+		System.out.println("第一个bad的apk安装完毕！");
+		//adb停止工作
+		//stopAdb();
 
+	}
+
+	private void stopAdb() throws IOException {
+		// 通过环境变量获取adb程序的路径
+				String adbPath = System.getenv("ANDROID_HOME") + "/platform-tools/adb.exe";
+				File file = new File(adbPath);
+				String command = "adb kill-server";
+				Process process = Runtime.getRuntime().exec(command);
 	}
 
 	@AfterTest(alwaysRun = true)
 	public void tearDown() throws Exception {
+		
 	}
 
 	public static String compareQDH() {
@@ -232,10 +269,13 @@ public class Qdhtest {
 							String content = compareQDH();
 							if (content.equals(tmp[tmp.length - 1])) {
 								Xlsfile.writexls("QDH", 4, (i + 1), "OK");
-								System.out.println("渠道包" + apks[i] +"---"+ content + "=" + tmp[tmp.length - 1] + "——OK");
+								System.out.println(
+										"渠道包:" + apks[i] + "&&&" + content + "=" + tmp[tmp.length - 1] + "——OK");
 							} else {
 								Xlsfile.writexls("QDH", 4, (i + 1), "bad");
-								System.out.println(content + "!=" + tmp[tmp.length - 1] + "——bad");
+								System.out.println("渠道包:" + apks[i] + "&&&" + content + "!=" + tmp[tmp.length - 1] + "——bad");
+								badApk[y] = i+1;
+								y++;
 							}
 
 							break;
