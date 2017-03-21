@@ -136,7 +136,7 @@ public class Qdhtest {
 		 */
 
 		// System.out.println("apk安装启动");
-		Thread.sleep(5000);// 第一次sleep 5s
+//		Thread.sleep(5000);// 第一次sleep 5s,可以删除，仍然可以抓到渠道号
 		testcase();
 	}
 
@@ -192,7 +192,7 @@ public class Qdhtest {
 		getDevices();
 
 		// WebDriverWait wait = new WebDriverWait(driver, 60);
-		Thread.sleep(5000);// 第二次sleep 5s
+		Thread.sleep(5000);// 第二次sleep 5s，必须得有，否则抓不到
 
 		if (flag == false) {
 			System.out.println("第" + (i + 1) + "个apk没有抓到渠道号");
@@ -206,7 +206,7 @@ public class Qdhtest {
 		driver.quit();
 		i++;
 		if (i < apks.length) {
-			Thread.sleep(5000);// 第三次sleep 5s
+//			Thread.sleep(5000);// 第三次sleep 5s，可以删除，不受影响
 			setUp();
 		} else {
 			setUpFirstBad();
