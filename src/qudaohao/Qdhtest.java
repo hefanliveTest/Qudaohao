@@ -35,12 +35,13 @@ public class Qdhtest {
 	// "app-LeshiYingYongShangDian-release.apk",,
 	// "app-_360ShouJiZhuShou-release.apk",
 	// "app-SouGouYingYongShangDian-release.apk"
-	static String[] apks = {"app-A_SC_ShenMa-release.apk","SouGouYingYongShangDian-release.apk", "app-SouGouYingYongShangDian-release.apk" };
-	
+	static String[] apks = { "app-A_SC_ShenMa-release.apk", "SouGouYingYongShangDian-release.apk",
+			"app-SouGouYingYongShangDian-release.apk" };
+
 	static int i = 0;
-	static boolean flag = false;//能否抓到渠道号
-	boolean apkFlag = false;//Apps中是否有对应的apk
-	static int[] badApk;//第一个bad的apk行号
+	static boolean flag = false;// 能否抓到渠道号
+	boolean apkFlag = false;// Apps中是否有对应的apk
+	static int[] badApk = new int[100];// 第一个bad的apk行号
 	static int y = 0;//// 记录第一次bad的apk
 
 	File classpathRoot = new File(System.getProperty("user.dir"));
@@ -104,7 +105,7 @@ public class Qdhtest {
 		capabilities.setCapability("resetKeyboard", "True");
 
 		// 获取Apps中所有的apk名字
-		String path = appDir.getAbsolutePath();
+		String path = appDir.getAbsolutePath();// 获取apk的根目录
 		System.out.println(path + "---路径");
 		File appFiles = new File(path);
 		// 获取该文件夹的文件数，存入数组
@@ -135,41 +136,28 @@ public class Qdhtest {
 		 */
 
 		// System.out.println("apk安装启动");
-		Thread.sleep(5000);
+		Thread.sleep(5000);// 第一次sleep 5s
 		testcase();
 	}
 
-	public void testcase() throws Exception {
-
-		// 执行adb
-		getDevices();
-
-		// WebDriverWait wait = new WebDriverWait(driver, 60);
-		Thread.sleep(5000);
-
-		if (flag == false) {
-			System.out.println("第" + (i + 1) + "个apk没有抓到渠道号");
-		}
-
-		System.out.println("第" + (i + 1) + "个apk运行完毕**************************");
-
-		driver.removeApp("com.starunion.hefantv");
-		driver.quit();
-		i++;
-		if (i < apks.length) {
-			Thread.sleep(5000);
-			setUp();
-		} else {
-			setUpFirstBad();
-		}
-
+	private void stopAdb() throws IOException {
+		// 通过环境变量获取adb程序的路径
+		String adbPath = System.getenv("ANDROID_HOME") + "/platform-tools/adb.exe";
+		File file = new File(adbPath);
+		String command = "adb kill-server";
+		Process process = Runtime.getRuntime().exec(command);
 	}
 
+	@AfterTest(alwaysRun = true)
+	public void tearDown() throws Exception {
+
+	}
+	
 	public void setUpFirstBad() throws Exception {
 		// 查找xls文件，获取第一个bad
-//		int raw = Xlsfile.search("bad");// 返回bad所在行号
+		// int raw = Xlsfile.search("bad");// 返回bad所在行号
 		System.out.println("第一个bad所在行号" + badApk[0]);
-		File app = new File(appDir, apks[badApk[0]]);
+		File app = new File(appDir, apks[badApk[0] - 1]);
 		DesiredCapabilities capabilities = new DesiredCapabilities();
 		capabilities.setCapability("noSign", "True");// 去除appium的签名
 		capabilities.setCapability(CapabilityType.BROWSER_NAME, "");
@@ -193,23 +181,39 @@ public class Qdhtest {
 		 */
 
 		System.out.println("第一个bad的apk安装完毕！");
-		//adb停止工作
-		//stopAdb();
+		// adb停止工作
+		// stopAdb();
 
 	}
 
-	private void stopAdb() throws IOException {
-		// 通过环境变量获取adb程序的路径
-				String adbPath = System.getenv("ANDROID_HOME") + "/platform-tools/adb.exe";
-				File file = new File(adbPath);
-				String command = "adb kill-server";
-				Process process = Runtime.getRuntime().exec(command);
-	}
+	public void testcase() throws Exception {
 
-	@AfterTest(alwaysRun = true)
-	public void tearDown() throws Exception {
+		// 执行adb
+		getDevices();
+
+		// WebDriverWait wait = new WebDriverWait(driver, 60);
+		Thread.sleep(5000);// 第二次sleep 5s
+
+		if (flag == false) {
+			System.out.println("第" + (i + 1) + "个apk没有抓到渠道号");
+		}
+
+		if(i<apks.length){
+			System.out.println("第" + (i + 1) + "个apk运行完毕**************************");
+		}
 		
+		driver.removeApp("com.starunion.hefantv");
+		driver.quit();
+		i++;
+		if (i < apks.length) {
+			Thread.sleep(5000);// 第三次sleep 5s
+			setUp();
+		} else {
+			setUpFirstBad();
+		}
+
 	}
+
 
 	public static String compareQDH() {
 		String content = Xlsfile.readxls("QDH", 3, (i + 1));
@@ -272,10 +276,16 @@ public class Qdhtest {
 								System.out.println(
 										"渠道包:" + apks[i] + "&&&" + content + "=" + tmp[tmp.length - 1] + "——OK");
 							} else {
-								Xlsfile.writexls("QDH", 4, (i + 1), "bad");
-								System.out.println("渠道包:" + apks[i] + "&&&" + content + "!=" + tmp[tmp.length - 1] + "——bad");
-								badApk[y] = i+1;
-								y++;
+								
+								//判断是否是安装第一个bad的apk
+								if(i<apks.length){
+									Xlsfile.writexls("QDH", 4, (i + 1), "bad");
+									System.out.println(
+										"渠道包:" + apks[i] + "&&&" + content + "!=" + tmp[tmp.length - 1] + "——bad");
+									badApk[y] = i + 1;
+									y++;
+								}
+								
 							}
 
 							break;
