@@ -35,8 +35,26 @@ public class Qdhtest {
 	// "app-LeshiYingYongShangDian-release.apk",,
 	// "app-_360ShouJiZhuShou-release.apk",
 	// "app-SouGouYingYongShangDian-release.apk"
-	static String[] apks = { "app-A_SC_ShenMa-release.apk", "SouGouYingYongShangDian-release.apk",
-			"app-SouGouYingYongShangDian-release.apk" };
+	/*static String[] apks = { "app-A_SC_ShenMa-release.apk", "SouGouYingYongShangDian-release.apk",
+			"app-SouGouYingYongShangDian-release.apk" };*/
+	
+	static String[] apks = {
+	"app-hf_s26-release.apk",
+	"app-hf_s27-release.apk",
+	"app-hf_s28-release.apk",
+	"app-hf_s29-release.apk",
+	"app-hf_s30-release.apk",
+	"app-hf_s31-release.apk",
+	"app-hf_s32-release.apk",
+	"app-hf_s33-release.apk",
+	"app-hf_s34-release.apk",
+	"app-hf_s35-release.apk",
+	"app-hf_s36-release.apk",
+	"app-hf_s37-release.apk",
+	"app-hf_s38-release.apk",
+	"app-hf_s39-release.apk",
+	"app-hf_s40-release.apk"};
+
 
 	static int i = 0;
 	static boolean flag = false;// 能否抓到渠道号
@@ -136,7 +154,7 @@ public class Qdhtest {
 		 */
 
 		// System.out.println("apk安装启动");
-//		Thread.sleep(5000);// 第一次sleep 5s,可以删除，仍然可以抓到渠道号
+		Thread.sleep(5000);// 第一次sleep 5s,可以删除，仍然可以抓到渠道号
 		testcase();
 	}
 
@@ -206,7 +224,7 @@ public class Qdhtest {
 		driver.quit();
 		i++;
 		if (i < apks.length) {
-//			Thread.sleep(5000);// 第三次sleep 5s，可以删除，不受影响
+			Thread.sleep(5000);// 第三次sleep 5s，可以删除，不受影响
 			setUp();
 		} else {
 			setUpFirstBad();
