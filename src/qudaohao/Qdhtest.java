@@ -275,33 +275,38 @@ public class Qdhtest {
 	public void setUpFirstBad() throws Exception {
 		// 查找xls文件，获取第一个bad
 		// int raw = Xlsfile.search("bad");// 返回bad所在行号
-		System.out.println("第一个bad所在行号" + badApk[0]);
-		File app = new File(appDir, apks[badApk[0] - 1]);
-		DesiredCapabilities capabilities = new DesiredCapabilities();
-		capabilities.setCapability("noSign", "True");// 去除appium的签名
-		capabilities.setCapability(CapabilityType.BROWSER_NAME, "");
-		capabilities.setCapability("platformName", "Android");
-		capabilities.setCapability("deviceName", "Android Emulator");
-		capabilities.setCapability("platformVersion", "6.0");
-		capabilities.setCapability("app", app.getAbsolutePath());
-		capabilities.setCapability("appPackage", "com.starunion.hefantv");
-		capabilities.setCapability("appActivity", "com.sagacreate.boxlunch.activity.SplashActivity");
+//		System.out.println("第一个bad所在行号" + badApk[0]);
+		if(y<=0){
+			System.out.println("没有找到bad的apk");
+		}else{
+			File app = new File(appDir, apks[badApk[0]]);
+			DesiredCapabilities capabilities = new DesiredCapabilities();
+			capabilities.setCapability("noSign", "True");// 去除appium的签名
+			capabilities.setCapability(CapabilityType.BROWSER_NAME, "");
+			capabilities.setCapability("platformName", "Android");
+			capabilities.setCapability("deviceName", "Android Emulator");
+			capabilities.setCapability("platformVersion", "6.0");
+			capabilities.setCapability("app", app.getAbsolutePath());
+			capabilities.setCapability("appPackage", "com.starunion.hefantv");
+			capabilities.setCapability("appActivity", "com.sagacreate.boxlunch.activity.SplashActivity");
 
-		capabilities.setCapability("unicodeKeyboard", "True");
-		capabilities.setCapability("resetKeyboard", "True");
-		System.out.println("开始安装第一个bad的apk");
+			capabilities.setCapability("unicodeKeyboard", "True");
+			capabilities.setCapability("resetKeyboard", "True");
+			System.out.println("开始安装第一个bad的apk");
 
-		driver = new AndroidDriver(new URL("http://127.0.0.1:4723/wd/hub"), capabilities);
+			driver = new AndroidDriver(new URL("http://127.0.0.1:4723/wd/hub"), capabilities);
 
-		/*
-		 * //允许USB安装 WebElement e =
-		 * driver.findElement(By.id("com.miui.securitycenter:id/allow_button"));
-		 * e.click();
-		 */
+			/*
+			 * //允许USB安装 WebElement e =
+			 * driver.findElement(By.id("com.miui.securitycenter:id/allow_button"));
+			 * e.click();
+			 */
 
-		System.out.println("第一个bad的apk安装完毕！");
-		// adb停止工作
-		// stopAdb();
+			System.out.println("第一个bad的apk安装完毕！");
+			// adb停止工作
+			// stopAdb();
+		}
+		
 
 	}
 
