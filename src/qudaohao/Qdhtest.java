@@ -92,7 +92,6 @@ public class Qdhtest {
 	static int[] badApk = new int[100];// 第一个bad的apk行号
 	static int y = 0;//// 记录第一次bad的apk
 
-	static int sum = 0;// 记录安卓6.0运行第一次，有5个权限；第二次运行就是4次权限
 	static boolean version = false;
 
 	File classpathRoot = new File(System.getProperty("user.dir"));
@@ -331,44 +330,17 @@ public class Qdhtest {
 	}
 
 	private static void execute6() {// 安卓系统6.0的执行此方法
-
-		if (sum == 0) {
-			// System.out.println("sum ="+sum+","+"执行了1");
-			getPermission1();
-
-		} else if (sum == 1) {
-			// System.out.println("sum ="+sum+","+"执行了2");
-			getPermission2();
-
-		}
-	}
-
-	private static void getPermission2() {
-
-		for (int i = 0; i < 4; i++) {
-			WebElement nokjfs = driver.findElement(By.id("com.android.packageinstaller:id/permission_allow_button"));
-			// System.out.println("点击前执行第"+i+"次"+nokjfs.toString());
-			if (nokjfs.toString() != null && nokjfs.toString().length() > 0) {
-				nokjfs.click();
-			}
-
+		
+		//弹窗是否存在该元素
+		while(driver.getPageSource().contains("com.android.packageinstaller:id/permission_allow_button")){
+			getPermission();
 		}
 
 	}
 
-	private static void getPermission1() {
-
-		for (int i = 0; i < 5; i++) {
-			WebElement nokjfs = driver.findElement(By.id("com.android.packageinstaller:id/permission_allow_button"));
-			// System.out.println("点击前执行第"+i+"次"+nokjfs.toString());
-			if (nokjfs.toString() != null && nokjfs.toString().length() > 0) {
-				nokjfs.click();
-			}
-
-		}
-
-		sum = 1;
-
+	private static void getPermission() {
+		WebElement nokjfs = driver.findElement(By.id("com.android.packageinstaller:id/permission_allow_button"));
+		nokjfs.click();
 	}
 
 	public static String compareQDH() {
@@ -416,7 +388,7 @@ public class Qdhtest {
 				try {
 					// 循环读取输入流
 					while ((line = br.readLine()) != null) {
-						// System.out.println("@@@" + line);// 控制台输出
+//						 System.out.println("@@@" + line);// 控制台输出
 
 						// 判断是否有&q_channel=
 						if (line.contains("--- save num --- ")) {
