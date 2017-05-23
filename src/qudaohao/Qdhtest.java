@@ -86,13 +86,14 @@ public class Qdhtest {
 			"app-hf_s75-release.apk", "app-hf_s76-release.apk", "app-hf_s77-release.apk", "app-hf_s78-release.apk",
 			"app-hf_s79-release.apk" };
 
-	static int i = 0;
+	static int i = 93;
 	static boolean flag = false;// 能否抓到渠道号
 	boolean apkFlag = false;// Apps中是否有对应的apk
 	static int[] badApk = new int[100];// 第一个bad的apk行号
 	static int y = 0;//// 记录第一次bad的apk
 
-	static boolean version = false;
+//	static boolean version = false;//记录安卓的版本号是否是6.0以上（包含6.0）
+	static int version = 5 ;
 
 	File classpathRoot = new File(System.getProperty("user.dir"));
 	File appDir = new File(classpathRoot, "apps");
@@ -247,8 +248,7 @@ public class Qdhtest {
 	public void testcase() throws Exception {
 
 		// 为6.0的手机系统添加点击“始终允许”的自动点击--------------------------
-		System.out.println("version的值" + version);
-		if (version) {// version为false则为6.0以下，为true为6.0以上（包含6.0）
+		if (version==6) {// version为false则为6.0以下，为true为6.0以上（包含6.0）
 			execute6();// 如果是安卓6以下，则不执行此方法
 		}
 
@@ -256,15 +256,14 @@ public class Qdhtest {
 		getDevices();
 
 		// WebDriverWait wait = new WebDriverWait(driver, 60);
-		Thread.sleep(5000);// 第二次sleep 5s，必须得有，否则抓不到
+		Thread.sleep(5000);// 第二次sleep 5s，必须得有，否则抓不到,等着抓log的渠道号
 
 		if (flag == false) {
 			System.out.println("第" + (i + 1) + "个apk没有抓到渠道号");
 		}
 
 		if (i < apks.length) {
-			System.out.println("**************** 第" + (i + 1) + "个apk： " + apks[i] + " 运行完毕 ****************");
-			System.out.println();
+			System.out.println("**************** 第" + (i + 1) + "个apk： " + apks[i] + " 运行完毕 ****************\n");
 		}
 
 		driver.removeApp("com.starunion.hefantv");
@@ -315,7 +314,7 @@ public class Qdhtest {
 						int version0 = Integer.parseInt(tmp[0]);
 						System.out.println("该手机的版本号是：" + version0);
 						if (version0 >= 6) {
-							version = true;
+							version = 6;
 						}
 
 					}
@@ -385,10 +384,16 @@ public class Qdhtest {
 			@Override
 			public void run() {
 				String line = null;
+				
+				//记录抓log的时间，超过5s则停止
+				Date date = new Date(System.currentTimeMillis());
+				long time = date.getTime();
+				
 				try {
 					// 循环读取输入流
-					while ((line = br.readLine()) != null) {
+					while ((line = br.readLine()) != null && (new Date(System.currentTimeMillis()).getTime())<(time+5000)) {
 //						 System.out.println("@@@" + line);// 控制台输出
+//						 txtLog(line);//记录到log
 
 						// 判断是否有&q_channel=
 						if (line.contains("--- save num --- ")) {
@@ -416,10 +421,13 @@ public class Qdhtest {
 								}
 
 							}
-
+							
+							//System.out.println("执行了break");
 							break;
 						}
+						
 					}
+					
 					br.close();
 
 				} catch (IOException e) {
@@ -453,7 +461,5 @@ public class Qdhtest {
 			e.printStackTrace();
 		}
 	}
-
-	// 测试第三个人拉取（无权限提交代码的人）
 
 }
