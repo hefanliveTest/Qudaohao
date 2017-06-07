@@ -48,45 +48,147 @@ public class Qdhtest {
 	File file0 = new File(adbPath0);
 	String command0 = "adb shell getprop ro.build.version.release";
 
-	static String[] apks = { "app-TencentYingYongBao-release.apk", "app-BaiDuShouJiZhuShou-release.apk",
-			"app-XiaoMiYingYongShangDian-release.apk", "app-_360ShouJiZhuShou-release.apk",
-			"app-HuaWeiYingYongShangDian-release.apk", "app-OppoYingYongShangDian-release.apk",
-			"app-VivoYingYongShangDian-release.apk", "app-LeshiYingYongShangDian-release.apk",
-			"app-PPZhuShou-release.apk", "app-LenovoLeShangDian-release.apk", "app-WanDouJia-release.apk",
-			"app-SamsungYingYongShangDian-release.apk", "app-MeiZuYingYongShangDian-release.apk",
-			"app-SouGouYingYongShangDian-release.apk", "app-AnZhiYingYongShiChang-release.apk",
-			"app-HFLiveGuanWang-release.apk", "app-HFsem1-release.apk", "app-HFsem2-release.apk",
-			"app-HFsem3-release.apk", "app-HFsem4-release.apk", "app-HFsem5-release.apk", "app-HFsem6-release.apk",
-			"app-A_SC_TouTiao-release.apk", "app-A_SC_ShenMa-release.apk", "app-hf_test1-release.apk",
-			"app-hf_test2-release.apk", "app-hf_test3-release.apk", "app-hf_test4-release.apk",
-			"app-hf_test5-release.apk", "app-hf_h5-release.apk", "app-weibo-release.apk", "app-sina-release.apk",
-			"app-youdao-release.apk", "app-hf_test6-release.apk", "app-hf_test7-release.apk",
-			"app-hf_test8-release.apk", "app-hf_test9-release.apk", "app-hf_test10-release.apk",
-			"app-hf_test11-release.apk", "app-aliyun-release.apk", "app-jinli-release.apk", "app-mumayi-release.apk",
-			"app-hf_test12-release.apk", "app-hf_test13-release.apk", "app-hf_test14-release.apk",
-			"app-hf_test15-release.apk", "app-hf_test16-release.apk", "app-hf_s1-release.apk", "app-hf_s2-release.apk",
-			"app-hf_s3-release.apk", "app-hf_s4-release.apk", "app-hf_s5-release.apk", "app-hf_s6-release.apk",
-			"app-hf_s7-release.apk", "app-hf_s8-release.apk", "app-hf_s9-release.apk", "app-hf_s10-release.apk",
-			"app-hf_s11-release.apk", "app-hf_s12-release.apk", "app-hf_s13-release.apk", "app-hf_s14-release.apk",
-			"app-hf_s15-release.apk", "app-hf_s16-release.apk", "app-hf_s17-release.apk", "app-hf_s18-release.apk",
-			"app-hf_s19-release.apk", "app-hf_s20-release.apk", "app-hf_s21-release.apk", "app-hf_s22-release.apk",
-			"app-hf_s23-release.apk", "app-hf_s24-release.apk", "app-hf_s25-release.apk", "app-hf_s26-release.apk",
-			"app-hf_s27-release.apk", "app-hf_s28-release.apk", "app-hf_s29-release.apk", "app-hf_s30-release.apk",
-			"app-hf_s31-release.apk", "app-hf_s32-release.apk", "app-hf_s33-release.apk", "app-hf_s34-release.apk",
-			"app-hf_s35-release.apk", "app-hf_s36-release.apk", "app-hf_s37-release.apk", "app-hf_s38-release.apk",
-			"app-hf_s39-release.apk", "app-hf_s40-release.apk", "app-hf_s41-release.apk", "app-hf_s42-release.apk",
-			"app-hf_s43-release.apk", "app-hf_s44-release.apk", "app-hf_s45-release.apk", "app-hf_s46-release.apk",
-			"app-hf_s47-release.apk", "app-hf_s48-release.apk", "app-hf_s49-release.apk", "app-hf_s50-release.apk",
-			"app-hf_s51-release.apk", "app-hf_s52-release.apk", "app-hf_s53-release.apk", "app-hf_s54-release.apk",
-			"app-hf_s55-release.apk", "app-hf_s56-release.apk", "app-hf_s57-release.apk", "app-hf_s58-release.apk",
-			"app-hf_s59-release.apk", "app-hf_s60-release.apk", "app-hf_s61-release.apk", "app-hf_s62-release.apk",
-			"app-hf_s63-release.apk", "app-hf_s64-release.apk", "app-hf_s65-release.apk", "app-hf_s66-release.apk",
-			"app-hf_s67-release.apk", "app-hf_s68-release.apk", "app-hf_s69-release.apk", "app-hf_s70-release.apk",
-			"app-hf_s71-release.apk", "app-hf_s72-release.apk", "app-hf_s73-release.apk", "app-hf_s74-release.apk",
-			"app-hf_s75-release.apk", "app-hf_s76-release.apk", "app-hf_s77-release.apk", "app-hf_s78-release.apk",
-			"app-hf_s79-release.apk" };
+	static String[] apks = {
+		"app-TencentYingYongBao-release.apk",
+		"app-BaiDuShouJiZhuShou-release.apk",
+		"app-XiaoMiYingYongShangDian-release.apk",
+		"app-_360ShouJiZhuShou-release.apk",
+		"app-HuaWeiYingYongShangDian-release.apk",
+		"app-OppoYingYongShangDian-release.apk",
+		"app-VivoYingYongShangDian-release.apk",
+		"app-LeshiYingYongShangDian-release.apk",
+		"app-PPZhuShou-release.apk",
+		"app-LenovoLeShangDian-release.apk",
+		"app-WanDouJia-release.apk",
+		"app-SamsungYingYongShangDian-release.apk",
+		"app-MeiZuYingYongShangDian-release.apk",
+		"app-SouGouYingYongShangDian-release.apk",
+		"app-AnZhiYingYongShiChang-release.apk",
+		"app-HFLiveGuanWang-release.apk",
+		"app-HFsem1-release.apk",
+		"app-HFsem2-release.apk",
+		"app-HFsem3-release.apk",
+		"app-HFsem4-release.apk",
+		"app-HFsem5-release.apk",
+		"app-HFsem6-release.apk",
+		"app-A_SC_TouTiao-release.apk",
+		"app-A_SC_ShenMa-release.apk",
+		"app-hf_test1-release.apk",
+		"app-hf_test2-release.apk",
+		"app-hf_test3-release.apk",
+		"app-hf_test4-release.apk",
+		"app-hf_test5-release.apk",
+		"app-hf_h5-release.apk",
+		"app-weibo-release.apk",
+		"app-sina-release.apk",
+		"app-youdao-release.apk",
+		"app-hf_test6-release.apk",
+		"app-hf_test7-release.apk",
+		"app-hf_test8-release.apk",
+		"app-hf_test9-release.apk",
+		"app-hf_test10-release.apk",
+		"app-hf_test11-release.apk",
+		"app-aliyun-release.apk",
+		"app-jinli-release.apk",
+		"app-mumayi-release.apk",
+		"app-hf_test12-release.apk",
+		"app-hf_test13-release.apk",
+		"app-hf_test14-release.apk",
+		"app-hf_test15-release.apk",
+		"app-hf_test16-release.apk",
+		"app-hf_s1-release.apk",
+		"app-hf_s2-release.apk",
+		"app-hf_s3-release.apk",
+		"app-hf_s4-release.apk",
+		"app-hf_s5-release.apk",
+		"app-hf_s6-release.apk",
+		"app-hf_s7-release.apk",
+		"app-hf_s8-release.apk",
+		"app-hf_s9-release.apk",
+		"app-hf_s10-release.apk",
+		"app-hf_s11-release.apk",
+		"app-hf_s12-release.apk",
+		"app-hf_s13-release.apk",
+		"app-hf_s14-release.apk",
+		"app-hf_s15-release.apk",
+		"app-hf_s16-release.apk",
+		"app-hf_s17-release.apk",
+		"app-hf_s18-release.apk",
+		"app-hf_s19-release.apk",
+		"app-hf_s20-release.apk",
+		"app-hf_s21-release.apk",
+		"app-hf_s22-release.apk",
+		"app-hf_s23-release.apk",
+		"app-hf_s24-release.apk",
+		"app-hf_s25-release.apk",
+		"app-hf_s26-release.apk",
+		"app-hf_s27-release.apk",
+		"app-hf_s28-release.apk",
+		"app-hf_s29-release.apk",
+		"app-hf_s30-release.apk",
+		"app-hf_s31-release.apk",
+		"app-hf_s32-release.apk",
+		"app-hf_s33-release.apk",
+		"app-hf_s34-release.apk",
+		"app-hf_s35-release.apk",
+		"app-hf_s36-release.apk",
+		"app-hf_s37-release.apk",
+		"app-hf_s38-release.apk",
+		"app-hf_s39-release.apk",
+		"app-hf_s40-release.apk",
+		"app-hf_s41-release.apk",
+		"app-hf_s42-release.apk",
+		"app-hf_s43-release.apk",
+		"app-hf_s44-release.apk",
+		"app-hf_s45-release.apk",
+		"app-hf_s46-release.apk",
+		"app-hf_s47-release.apk",
+		"app-hf_s48-release.apk",
+		"app-hf_s49-release.apk",
+		"app-hf_s50-release.apk",
+		"app-hf_s51-release.apk",
+		"app-hf_s52-release.apk",
+		"app-hf_s53-release.apk",
+		"app-hf_s54-release.apk",
+		"app-hf_s55-release.apk",
+		"app-hf_s56-release.apk",
+		"app-hf_s57-release.apk",
+		"app-hf_s58-release.apk",
+		"app-hf_s59-release.apk",
+		"app-hf_s60-release.apk",
+		"app-hf_s61-release.apk",
+		"app-hf_s62-release.apk",
+		"app-hf_s63-release.apk",
+		"app-hf_s64-release.apk",
+		"app-hf_s65-release.apk",
+		"app-hf_s66-release.apk",
+		"app-hf_s67-release.apk",
+		"app-hf_s68-release.apk",
+		"app-hf_s69-release.apk",
+		"app-hf_s70-release.apk",
+		"app-hf_s71-release.apk",
+		"app-hf_s72-release.apk",
+		"app-hf_s73-release.apk",
+		"app-hf_s74-release.apk",
+		"app-hf_s75-release.apk",
+		"app-hf_s76-release.apk",
+		"app-hf_s77-release.apk",
+		"app-hf_s78-release.apk",
+		"app-hf_s79-release.apk",
+		"app-hf_s80-release.apk",
+		"app-hf_s81-release.apk",
+		"app-hf_s82-release.apk",
+		"app-hf_s83-release.apk",
+		"app-hf_s84-release.apk",
+		"app-hf_s85-release.apk",
+		"app-hf_s86-release.apk",
+		"app-hf_s87-release.apk",
+		"app-hf_s88-release.apk",
+		"app-hf_s89-release.apk" 
+		
+ };
 
-	static int i = 93;
+	static int i = 99;
 	static boolean flag = false;// 能否抓到渠道号
 	boolean apkFlag = false;// Apps中是否有对应的apk
 	static int[] badApk = new int[100];// 第一个bad的apk行号
@@ -179,7 +281,7 @@ public class Qdhtest {
 			System.out.println("开始安装第" + (i + 1) + "个apk。。。");
 			driver = new AndroidDriver(new URL("http://127.0.0.1:4723/wd/hub"), capabilities);
 		} else {
-			System.out.println("第" + (i + 1) + "个apk: " + apks[i] + " 没有找到");
+			System.err.println("第" + (i + 1) + "个apk: " + apks[i] + " 没有找到");
 			i++;
 			setUp();
 		}
@@ -256,21 +358,22 @@ public class Qdhtest {
 		getDevices();
 
 		// WebDriverWait wait = new WebDriverWait(driver, 60);
-		Thread.sleep(5000);// 第二次sleep 5s，必须得有，否则抓不到,等着抓log的渠道号
+		Thread.sleep(8000);// 第二次sleep 8s，必须得有，否则抓不到,等着抓log的渠道号
 
 		if (flag == false) {
-			System.out.println("第" + (i + 1) + "个apk没有抓到渠道号");
+			System.err.println("第" + (i + 1) + "个apk没有抓到渠道号\n");
 		}
 
 		if (i < apks.length) {
-			System.out.println("**************** 第" + (i + 1) + "个apk： " + apks[i] + " 运行完毕 ****************\n");
+			System.out.println("----第" + (i + 1) + "个apk： " + apks[i] + " 运行完毕 ****************\n");
+			
 		}
 
 		driver.removeApp("com.starunion.hefantv");
 		driver.quit();
 		i++;
 		if (i < apks.length) {
-			Thread.sleep(5000);// 第三次sleep 5s，可以删除，不受影响
+			Thread.sleep(4000);// 第三次sleep 5s，可以删除，不受影响
 			setUp();
 		} else {
 			setUpFirstBad();
@@ -393,7 +496,7 @@ public class Qdhtest {
 					// 循环读取输入流
 					while ((line = br.readLine()) != null && (new Date(System.currentTimeMillis()).getTime())<(time+5000)) {
 //						 System.out.println("@@@" + line);// 控制台输出
-//						 txtLog(line);//记录到log
+						 txtLog(line);//记录到log
 
 						// 判断是否有&q_channel=
 						if (line.contains("--- save num --- ")) {
@@ -407,15 +510,14 @@ public class Qdhtest {
 							String content = compareQDH();
 							if (content.equals(tmp[tmp.length - 1])) {
 								Xlsfile.writexls("QDH", 4, (i + 1), "OK");
-								System.out.println(
-										"渠道包:" + apks[i] + " &&& " + content + " = " + tmp[tmp.length - 1] + "	——OK");
-							} else {
+								System.out.println("渠道包:" + apks[i] + " &&& " + content + " = " + tmp[tmp.length - 1] + "	——OK");
+							} 
+							else {
 
 								// 判断是否是安装第一个bad的apk
 								if (i < apks.length) {
 									Xlsfile.writexls("QDH", 4, (i + 1), "bad");
-									System.out.println("渠道包:" + apks[i] + " &&& " + content + " != "
-											+ tmp[tmp.length - 1] + "	——bad");
+									System.err.println("渠道包:" + apks[i] + " &&& " + content + " != " + tmp[tmp.length - 1] + "	——bad");
 									badApk[y] = i + 1;
 									y++;
 								}
